@@ -65,6 +65,7 @@ test.describe('Profile', () => {
     await profilePage.educacionDropdown.click();
     await page.getByRole('option', { name: 'Terciario' }).click();
     await profilePage.institucionInput.fill('UBA');
+    await page.getByText('Agubau S.R.L').waitFor({ state: 'visible', timeout: 20000 });
     await page.getByText('Agubau S.R.L').click();
     await profilePage.titleInput.fill('automation title');
     await profilePage.educacionDescriptionInput.fill('test');
@@ -84,6 +85,7 @@ test.describe('Profile', () => {
     await profilePage.closeSubPanelButton.click();
     await profilePage.educacionTab.click();
 
+    await page.getByText('Agubau S.R.L').waitFor({ state: 'visible', timeout: 20000 });
     await page.getByText('Agubau S.R.L').click();
     await profilePage.deleteEducacionButton.click();
     await profilePage.confirmDeleteButton.click();

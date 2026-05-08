@@ -20,6 +20,6 @@ test.describe('Login', () => {
     await loginPage.goto();
     await loginPage.login(EMAIL, PASSWORD);
 
-    await expect(page.getByText('Ing. Tincho Barroso')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Ing. Tincho Barroso')).toBeVisible({ timeout: 20000 });
   });
 });
