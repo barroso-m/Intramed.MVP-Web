@@ -1,0 +1,20 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/results/
+
+# Test artifacts
+/allure-results/
+/allure-report/
+*.zip
+
+# Environment
+.env
+
+# Claude Code local settings
+.claude/
