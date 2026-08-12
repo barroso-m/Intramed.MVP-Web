@@ -18,6 +18,15 @@ export class ProfilePage {
   readonly addButton: Locator;
   readonly deleteEducacionButton: Locator;
   readonly confirmDeleteButton: Locator;
+  readonly cancelButton: Locator;
+  readonly closeModalButton: Locator;
+  readonly educacionDescriptionCounter: Locator;
+  readonly modalHeadingAgregarEducacion: Locator;
+  readonly addSectionButton: Locator;
+  readonly addSectionModalHeading: Locator;
+  readonly activityMoreButton: Locator;
+  readonly activityFilter: (name: string) => Locator;
+  readonly activityBackButton: Locator;
 
   constructor(private readonly page: Page) {
     this.userNavLink = page.getByRole('link', { name: /^Ing\. Tincho Barroso\s+\S/ });
@@ -27,6 +36,22 @@ export class ProfilePage {
         .locator('.flex.flex-col > .bg-grayscale-10')
         .filter({ hasText: name })
         .filter({ visible: true });
+
+    this.addSectionButton = page
+      .locator('.bg-grayscale-10')
+      .filter({ hasText: /^Agregar secciones/ })
+      .filter({ visible: true })
+      .locator('button')
+      .first();
+
+    this.addSectionModalHeading = page.getByRole('heading', { name: 'Agregar sección', exact: true });
+
+    this.activityMoreButton = page.getByText('Ver más actividad').filter({ visible: true }).first();
+
+    this.activityFilter = (name: string) =>
+      page.getByRole('button', { name, exact: true }).filter({ visible: true }).first();
+
+    this.activityBackButton = page.getByRole('button').filter({ has: page.locator('svg[class*="chevron-left"], svg[class*="arrow-left"]') }).first();
 
     this.descriptionEditButton = page.locator('.w-full > .h-full').filter({ visible: true }).first();
     this.descriptionInput = page.getByRole('textbox', { name: 'Escribir sobre tí' });
@@ -46,6 +71,10 @@ export class ProfilePage {
     this.addButton = page.getByRole('button', { name: 'Agregar' });
     this.deleteEducacionButton = page.locator('.h-full.flex.items-center.absolute').first();
     this.confirmDeleteButton = page.getByRole('button', { name: 'Eliminar' });
+    this.cancelButton = page.getByRole('button', { name: 'Cancelar' });
+    this.closeModalButton = page.locator('button:has(svg.feather-x)').first();
+    this.educacionDescriptionCounter = page.getByText(/\d+\/180/);
+    this.modalHeadingAgregarEducacion = page.getByRole('heading', { name: 'Agregar educación' });
   }
 
   async gotoViaFeed() {
