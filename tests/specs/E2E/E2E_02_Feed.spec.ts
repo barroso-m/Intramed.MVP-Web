@@ -14,6 +14,6 @@ test.describe('Feed', () => {
     await feedPage.addEmoji('💪');
     await feedPage.submitPost();
 
-    await expect(page.getByText('Publicación creada correctamente')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(postContent).first()).toBeVisible({ timeout: 10000 });
   });
 });

@@ -9,7 +9,7 @@ export class FeedPage {
   readonly userNavLink: Locator;
 
   constructor(private readonly page: Page) {
-    this.createPostButton = page.locator('.flex.items-center.justify-center.h-\\[38px\\]');
+    this.createPostButton = page.getByTestId('post-composer-bar-trigger');
     this.postEditor = page.locator('.tiptap');
     this.nextButton = page.getByRole('button', { name: 'Siguiente' });
     this.publishButton = page.getByRole('button', { name: 'Crear publicación' });
@@ -19,6 +19,8 @@ export class FeedPage {
 
   async goto() {
     await this.page.goto('/feed', { waitUntil: 'domcontentloaded' });
+    await this.page.waitForLoadState('networkidle');
+    await this.createPostButton.waitFor({ state: 'visible' });
   }
 
   async openCreatePostModal() {

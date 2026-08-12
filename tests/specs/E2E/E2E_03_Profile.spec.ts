@@ -9,6 +9,7 @@ test.describe('Profile', () => {
 
     await profilePage.gotoViaFeed();
 
+    await expect(page).toHaveURL(/\/profile\//);
     await expect(profilePage.descriptionEditButton).toBeVisible({ timeout: 10000 });
   });
 
@@ -48,7 +49,8 @@ test.describe('Profile', () => {
 
     await expect(page.getByText('Datos guardados correctamente')).toBeVisible({ timeout: 10000 });
 
-    await profilePage.backButton.click();
+    await profilePage.returnToProfile();
+    await expect(page).toHaveURL(/\/profile\//);
     await expect(profilePage.descriptionEditButton).toBeVisible({ timeout: 10000 });
   });
 
@@ -57,9 +59,6 @@ test.describe('Profile', () => {
 
     await profilePage.gotoViaFeed();
 
-    await profilePage.editSectionButton.click();
-    await profilePage.closeSubPanelButton.click();
-    await profilePage.educacionTab.click();
     await profilePage.addEducacionButton.click();
 
     await profilePage.educacionDropdown.click();
@@ -81,12 +80,8 @@ test.describe('Profile', () => {
 
     await profilePage.gotoViaFeed();
 
-    await profilePage.editSectionButton.click();
-    await profilePage.closeSubPanelButton.click();
-    await profilePage.educacionTab.click();
-
-    await page.getByText('Agubau S.R.L').waitFor({ state: 'visible', timeout: 20000 });
-    await page.getByText('Agubau S.R.L').click();
+    await page.getByText('Agubau S.R.L').first().waitFor({ state: 'visible', timeout: 20000 });
+    await page.getByText('Agubau S.R.L').first().click();
     await profilePage.deleteEducacionButton.click();
     await profilePage.confirmDeleteButton.click();
 
