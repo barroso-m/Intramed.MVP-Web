@@ -20,6 +20,7 @@ test.describe('Login', () => {
     await loginPage.goto();
     await loginPage.login(EMAIL, PASSWORD);
 
-    await expect(page.getByText('Ing. Tincho Barroso')).toBeVisible({ timeout: 20000 });
+    await expect(page).toHaveURL(/\/feed/, { timeout: 20000 });
+    await expect(page.getByText(/Barroso/i).first()).toBeVisible({ timeout: 20000 });
   });
 });
