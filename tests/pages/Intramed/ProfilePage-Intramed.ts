@@ -24,6 +24,9 @@ export class ProfilePage {
   readonly modalHeadingAgregarEducacion: Locator;
   readonly addSectionButton: Locator;
   readonly addSectionModalHeading: Locator;
+  readonly ordenarSeccionesButton: Locator;
+  readonly personalizarSeccionesHeading: Locator;
+  readonly sortableHandles: Locator;
   readonly activityMoreButton: Locator;
   readonly activityFilter: (name: string) => Locator;
   readonly activityBackButton: Locator;
@@ -45,6 +48,17 @@ export class ProfilePage {
       .first();
 
     this.addSectionModalHeading = page.getByRole('heading', { name: 'Agregar sección', exact: true });
+
+    this.ordenarSeccionesButton = page
+      .locator('.bg-grayscale-10')
+      .filter({ hasText: /^Ordenar secciones/ })
+      .filter({ visible: true })
+      .locator('button')
+      .first();
+
+    this.personalizarSeccionesHeading = page.getByRole('heading', { name: 'Personalizar secciones', exact: true });
+
+    this.sortableHandles = page.locator('[aria-roledescription="sortable"]');
 
     this.activityMoreButton = page.getByText('Ver más actividad').filter({ visible: true }).first();
 

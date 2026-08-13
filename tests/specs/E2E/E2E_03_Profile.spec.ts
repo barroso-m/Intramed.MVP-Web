@@ -214,6 +214,61 @@ test.describe('Profile', () => {
     await expect(configPage.saveChangesButton).toBeDisabled();
   });
 
+  test('[IE-T56] PRF-011 - ordenar secciones del perfil', { tag: '@profile' }, async ({ page }) => {
+    const profilePage = new ProfilePage(page);
+
+    const readSortableNames = async () => {
+      return page
+        .locator('[role="dialog"] [aria-roledescription="sortable"]')
+        .evaluateAll(list =>
+          list.map(el => {
+            const row = el.closest('div.flex.justify-between');
+            return row?.querySelector('span')?.textContent?.trim() ?? '';
+          })
+        );
+    };
+
+    const openModalAndReadOrder = async () => {
+      await profilePage.ordenarSeccionesButton.click();
+      await expect(profilePage.personalizarSeccionesHeading).toBeVisible({ timeout: 10000 });
+      await page.waitForTimeout(500);
+      return readSortableNames();
+    };
+
+    const swapFirstTwoAndSave = async () => {
+      await profilePage.sortableHandles.first().focus();
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(300);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(500);
+
+      await profilePage.saveChangesButton.click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(2000);
+    };
+
+    await profilePage.gotoViaFeed();
+
+    const originalOrder = await openModalAndReadOrder();
+    expect(originalOrder.length).toBeGreaterThanOrEqual(2);
+    expect(originalOrder[0].length).toBeGreaterThan(0);
+
+    await swapFirstTwoAndSave();
+
+    const swappedOrder = await openModalAndReadOrder();
+    expect(swappedOrder[0]).toBe(originalOrder[1]);
+    expect(swappedOrder[1]).toBe(originalOrder[0]);
+
+    await swapFirstTwoAndSave();
+    const restoredOrder = await openModalAndReadOrder();
+    expect(restoredOrder[0]).toBe(originalOrder[0]);
+    expect(restoredOrder[1]).toBe(originalOrder[1]);
+
+    await page.keyboard.press('Escape');
+  });
+
   test('[IE-T33] PRF-007 - toggle un switch de Notificaciones y persistir', { tag: '@profile' }, async ({ page }) => {
     const configPage = new ConfigUserPage(page);
 
