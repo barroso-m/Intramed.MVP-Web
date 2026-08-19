@@ -62,8 +62,10 @@ Intramed.Web.Automation/
 │
 ├── utils/
 │   ├── secureFill.ts                  # Función para rellenar campos sensibles
-│   ├── zephyr-report.js               # Reporte de resultados a Zephyr (JUnit)
-│   └── zephyr-bulk-upload.js          # Integración alternativa con Zephyr
+│   ├── gmail-otp.ts                   # Lectura del OTP desde Gmail para onboarding
+│   ├── gmail-auth-url.js              # Setup one-time: genera URL de autorización Google
+│   ├── gmail-get-refresh-token.js     # Setup one-time: obtiene el refresh token
+│   └── zephyr-report.js               # Reporte de resultados a Zephyr (JUnit)
 │
 ├── allure-results/                    # Resultados raw de Allure (generados al correr tests)
 ├── allure-report/                     # Reporte HTML de Allure (generado con allure:generate)
