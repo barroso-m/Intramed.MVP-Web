@@ -13,6 +13,7 @@
     "test:login": "playwright test tests/specs/E2E/E2E_01_Login.spec.ts --project=Chromium",
     "test:feed": "playwright test tests/specs/E2E/E2E_02_Feed.spec.ts --project=Chromium",
     "test:profile": "playwright test tests/specs/E2E/E2E_03_Profile.spec.ts --project=Chromium",
+    "test:onboarding": "playwright test tests/specs/E2E/E2E_06_Onboarding.spec.ts --project=Chromium",
     "test:report": "playwright show-report",
     "zephyr:report": "node utils/zephyr-report.js",
     "test:zephyr": "npm run test && npm run zephyr:report",
@@ -38,6 +39,7 @@
   "dependencies": {
     "axios": "^1.13.6",
     "form-data": "^4.0.5",
+    "googleapis": "^174.0.1",
     "jsonwebtoken": "^9.0.3",
     "xml2js": "^0.6.2"
   }

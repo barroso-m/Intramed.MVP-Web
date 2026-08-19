@@ -6,6 +6,9 @@ export class ConfigUserPage {
   readonly notificationsTab: Locator;
   readonly datosPersonalesCard: Locator;
   readonly datosProfesionalesCard: Locator;
+  readonly gestionCuentaCard: Locator;
+  readonly deleteAccountButton: Locator;
+  readonly deleteAccountConfirmationText: Locator;
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
   readonly phoneInput: Locator;
@@ -26,6 +29,9 @@ export class ConfigUserPage {
 
     this.datosPersonalesCard = page.getByRole('button', { name: /^Datos personales/ });
     this.datosProfesionalesCard = page.getByRole('button', { name: /^Datos profesionales/ });
+    this.gestionCuentaCard = page.getByRole('button', { name: /^Gestión de cuenta/ });
+    this.deleteAccountButton = page.getByRole('button', { name: 'Eliminar', exact: true });
+    this.deleteAccountConfirmationText = page.getByText('¿Está seguro que desea eliminar su cuenta de IntraMed?');
 
     this.firstNameInput = page.locator('input[name="firstName"]');
     this.lastNameInput = page.locator('input[name="lastName"]');
@@ -68,6 +74,18 @@ export class ConfigUserPage {
     await this.datosProfesionalesCard.waitFor({ state: 'visible' });
     await this.datosProfesionalesCard.click();
     await this.saveChangesButton.waitFor({ state: 'visible' });
+  }
+
+  async openGestionDeCuenta() {
+    await this.gestionCuentaCard.waitFor({ state: 'visible' });
+    await this.gestionCuentaCard.click();
+    await this.deleteAccountButton.waitFor({ state: 'visible' });
+  }
+
+  async deleteAccount() {
+    await this.deleteAccountButton.click();
+    await this.deleteAccountConfirmationText.waitFor({ state: 'visible' });
+    await this.page.getByRole('button', { name: 'Eliminar', exact: true }).last().click();
   }
 
   async openNewsletter() {

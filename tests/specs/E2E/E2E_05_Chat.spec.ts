@@ -28,7 +28,7 @@ async function openSenderChatWithUser2(browser: import('@playwright/test').Brows
 }
 
 test.describe('Chat', () => {
-  test('[IE-T48] CHT-001 - visualización general de la mensajería', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T69] CHT-001 - visualización general de la mensajería', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -41,7 +41,7 @@ test.describe('Chat', () => {
     await expect(chatPage.searchInput).toBeVisible();
   });
 
-  test('[IE-T49] CHT-002 - enviar mensaje en conversación existente', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T70] CHT-002 - enviar mensaje en conversación existente', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -54,7 +54,7 @@ test.describe('Chat', () => {
     await expect(page.getByText(message).first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('[IE-T50] CHT-003 - abrir panel Nuevo mensaje', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T71] CHT-003 - abrir panel Nuevo mensaje', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -63,7 +63,7 @@ test.describe('Chat', () => {
     await expect(page.getByPlaceholder(/buscar/i).first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('[IE-T51] CHT-004 - tab No leídos filtra conversaciones', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T72] CHT-004 - tab No leídos filtra conversaciones', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -72,7 +72,7 @@ test.describe('Chat', () => {
     await expect(chatPage.tabTodos).toBeVisible();
   });
 
-  test('[IE-T52] CHT-007 - tab Solicitudes', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T75] CHT-007 - tab Solicitudes', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -81,7 +81,7 @@ test.describe('Chat', () => {
     await expect(chatPage.tabTodos).toBeVisible();
   });
 
-  test('[IE-T53] CHT-008 - buscador filtra conversaciones', { tag: '@chat' }, async ({ page }) => {
+  test('[IE-T76] CHT-008 - buscador filtra conversaciones', { tag: '@chat' }, async ({ page }) => {
     const chatPage = new ChatPage(page);
 
     await chatPage.goto();
@@ -99,7 +99,7 @@ test.describe('Chat', () => {
     await expect(chatPage.conversationItem('Sr. Test Test')).toBeVisible();
   });
 
-  test('[IE-T54] CHT-005 - recepción de mensaje entre usuarios', { tag: '@chat' }, async ({ browser }) => {
+  test('[IE-T73] CHT-005 - recepción de mensaje entre usuarios', { tag: '@chat' }, async ({ browser }) => {
     const receiverCtx = await browser.newContext({ storageState: 'playwright/.auth/auth-user2.json' });
     const receiverPage = await receiverCtx.newPage();
     const receiverChat = new ChatPage(receiverPage);
@@ -118,7 +118,7 @@ test.describe('Chat', () => {
     await receiverCtx.close();
   });
 
-  test('[IE-T55] CHT-006 - pill de Mensajes en navbar al recibir', { tag: '@chat' }, async ({ browser }) => {
+  test('[IE-T74] CHT-006 - pill de Mensajes en navbar al recibir', { tag: '@chat' }, async ({ browser }) => {
     const receiverCtx = await browser.newContext({ storageState: 'playwright/.auth/auth-user2.json' });
     const receiverPage = await receiverCtx.newPage();
     await receiverPage.goto('/feed', { waitUntil: 'domcontentloaded' });

@@ -4,7 +4,7 @@ import { OfertaAcademicaPage } from '../../pages/Intramed/OfertaAcademicaPage-In
 test.use({ storageState: 'playwright/.auth/auth.json' });
 
 test.describe('OfertaAcademica', () => {
-  test('[IE-T43] OFA-001 - visualización general', { tag: '@oferta' }, async ({ page }) => {
+  test('[IE-T61] OFA-001 - visualización general', { tag: '@oferta' }, async ({ page }) => {
     const ofertaPage = new OfertaAcademicaPage(page);
 
     await ofertaPage.goto();
@@ -15,7 +15,7 @@ test.describe('OfertaAcademica', () => {
     await expect(ofertaPage.explorarLink).toBeVisible();
   });
 
-  test('[IE-T44] OFA-002 - carrusel Recomendados avanza', { tag: '@oferta' }, async ({ page }) => {
+  test('[IE-T62] OFA-002 - carrusel Recomendados avanza', { tag: '@oferta' }, async ({ page }) => {
     const ofertaPage = new OfertaAcademicaPage(page);
 
     await ofertaPage.goto();
@@ -25,7 +25,7 @@ test.describe('OfertaAcademica', () => {
     await page.waitForTimeout(800);
   });
 
-  test('[IE-T45] OFA-003 - curso inscripto con badge y acceso al aula', { tag: '@oferta' }, async ({ page }) => {
+  test('[IE-T63] OFA-003 - curso inscripto con badge y acceso al aula', { tag: '@oferta' }, async ({ page }) => {
     const ofertaPage = new OfertaAcademicaPage(page);
 
     await ofertaPage.goto();
@@ -34,7 +34,7 @@ test.describe('OfertaAcademica', () => {
     await expect(ofertaPage.irAlAulaButton).toBeVisible();
   });
 
-  test('[IE-T46] OFA-004 - Ver más navega al detalle del contenido', { tag: '@oferta' }, async ({ page }) => {
+  test('[IE-T64] OFA-004 - Ver más navega al detalle del contenido', { tag: '@oferta' }, async ({ page }) => {
     const ofertaPage = new OfertaAcademicaPage(page);
 
     await ofertaPage.goto();
@@ -45,7 +45,7 @@ test.describe('OfertaAcademica', () => {
     await expect(page).toHaveURL(/\/content\//);
   });
 
-  test('[IE-T47] OFA-006 - Explorar toda la oferta abre el catálogo', { tag: '@oferta' }, async ({ page }) => {
+  test('[IE-T66] OFA-006 - Explorar toda la oferta abre el catálogo', { tag: '@oferta' }, async ({ page }) => {
     const ofertaPage = new OfertaAcademicaPage(page);
 
     await ofertaPage.goto();

@@ -89,7 +89,7 @@ test.describe('Profile', () => {
     await expect(page.getByText('Agubau S.R.L')).not.toBeVisible({ timeout: 10000 });
   });
 
-  test('[IE-T26] PRF-009 - cancelar edición de Sobre mí no persiste cambios', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T45] PRF-009 - cancelar edición de Sobre mí no persiste cambios', { tag: '@profile' }, async ({ page }) => {
     const profilePage = new ProfilePage(page);
     const unsavedText = `Texto que NO debe persistir ${Date.now()}`;
 
@@ -103,7 +103,7 @@ test.describe('Profile', () => {
     await expect(page.getByText(unsavedText)).not.toBeVisible();
   });
 
-  test('[IE-T27] PRF-008 - validaciones del modal Agregar educación', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T44] PRF-008 - validaciones del modal Agregar educación', { tag: '@profile' }, async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoViaFeed();
@@ -127,7 +127,7 @@ test.describe('Profile', () => {
     await expect(profilePage.modalHeadingAgregarEducacion).not.toBeVisible({ timeout: 5000 });
   });
 
-  test('[IE-T28] PRF-005 - editar datos personales desde configuración', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T41] PRF-005 - editar datos personales desde configuración', { tag: '@profile' }, async ({ page }) => {
     const configPage = new ConfigUserPage(page);
 
     await configPage.goto();
@@ -152,7 +152,7 @@ test.describe('Profile', () => {
     }
   });
 
-  test('[IE-T29] PRF-006 - toggle switches de Newsletter y Preferencias', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T42] PRF-006 - toggle switches de Newsletter y Preferencias', { tag: '@profile' }, async ({ page }) => {
     const configPage = new ConfigUserPage(page);
 
     await configPage.goto();
@@ -176,7 +176,7 @@ test.describe('Profile', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('[IE-T30] PRF-004 - ver más actividad y filtrar', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T40] PRF-004 - ver más actividad y filtrar', { tag: '@profile' }, async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoViaFeed();
@@ -193,7 +193,7 @@ test.describe('Profile', () => {
     }
   });
 
-  test('[IE-T31] PRF-003 - abrir modal Agregar sección', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T39] PRF-003 - abrir modal Agregar sección', { tag: '@profile' }, async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.gotoViaFeed();
@@ -203,7 +203,7 @@ test.describe('Profile', () => {
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
-  test('[IE-T32] PRF-010 - abrir Datos profesionales con Guardar cambios deshabilitado', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T46] PRF-010 - abrir Datos profesionales con Guardar cambios deshabilitado', { tag: '@profile' }, async ({ page }) => {
     const configPage = new ConfigUserPage(page);
 
     await configPage.goto();
@@ -214,7 +214,7 @@ test.describe('Profile', () => {
     await expect(configPage.saveChangesButton).toBeDisabled();
   });
 
-  test('[IE-T56] PRF-011 - ordenar secciones del perfil', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T47] PRF-011 - ordenar secciones del perfil', { tag: '@profile' }, async ({ page }) => {
     const profilePage = new ProfilePage(page);
 
     const readSortableNames = async () => {
@@ -269,7 +269,7 @@ test.describe('Profile', () => {
     await page.keyboard.press('Escape');
   });
 
-  test('[IE-T33] PRF-007 - toggle un switch de Notificaciones y persistir', { tag: '@profile' }, async ({ page }) => {
+  test('[IE-T43] PRF-007 - toggle un switch de Notificaciones y persistir', { tag: '@profile' }, async ({ page }) => {
     const configPage = new ConfigUserPage(page);
 
     await configPage.goto();

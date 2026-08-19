@@ -100,6 +100,12 @@ TEST_INVALID_PASSWORD=claveInvalida123
 BASE_URL=https://intramed-front-qa.conexa.ai
 LOGIN_URL=https://intramed-login-qa.conexa.ai/login
 
+# Gmail API (OTP para onboarding) - ver utils/gmail-otp.ts
+GMAIL_CLIENT_ID=tu_client_id
+GMAIL_CLIENT_SECRET=tu_client_secret
+GMAIL_REFRESH_TOKEN=tu_refresh_token
+GMAIL_TEST_INBOX=automationintramed@gmail.com
+
 # Zephyr config
 ZEPHYR_PROJECT_KEY=IE
 ZEPHYR_AUTH_TOKEN=tu_token_zephyr
@@ -107,6 +113,14 @@ ZEPHYR_FOLDER_ID=tu_folder_id
 ```
 
 **IMPORTANTE:** Nunca commitear `.env`. Está incluido en `.gitignore`.
+
+**Obtener el `GMAIL_REFRESH_TOKEN` (una sola vez por proyecto):**
+1. `node utils/gmail-auth-url.js` — imprime una URL de autorización de Google.
+2. Abrir esa URL, loguearse con la casilla que recibe los OTP (`automationintramed@gmail.com`) y aceptar el permiso de solo lectura sobre Gmail.
+3. Copiar el `code` de la URL de error/redirección resultante (expira en ~1 minuto).
+4. `node utils/gmail-get-refresh-token.js "<code>"` — imprime el refresh token para pegar en `.env`.
+
+Si la cuenta de Google no está agregada como "Test user" en Google Cloud Console (OAuth consent screen en modo Testing), el paso 2 va a fallar con "Acceso bloqueado".
 
 ### Paso 3: Instalar Navegadores (primera vez)
 

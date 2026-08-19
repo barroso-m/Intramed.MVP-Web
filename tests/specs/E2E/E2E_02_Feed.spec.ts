@@ -17,7 +17,7 @@ test.describe('Feed', () => {
     await expect(page.getByText(postContent).first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('[IE-T34] FEED-001 - abrir modal Repostear', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T48] FEED-001 - abrir modal Repostear', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -27,7 +27,7 @@ test.describe('Feed', () => {
     await expect(feedPage.repostSubmitButton).toBeDisabled();
   });
 
-  test('[IE-T35] FEED-002 - guardar y desguardar una publicación', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T49] FEED-002 - guardar y desguardar una publicación', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -39,7 +39,7 @@ test.describe('Feed', () => {
     await page.waitForTimeout(1500);
   });
 
-  test('[IE-T36] FEED-003 - abrir sección de comentarios', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T50] FEED-003 - abrir sección de comentarios', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -48,7 +48,7 @@ test.describe('Feed', () => {
     await expect(feedPage.commentSubmitButton).toBeDisabled();
   });
 
-  test('[IE-T37] FEED-005 - aplicar y limpiar filtros del feed', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T52] FEED-005 - aplicar y limpiar filtros del feed', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -64,7 +64,7 @@ test.describe('Feed', () => {
     await expect(page).toHaveURL(/\/feed$/);
   });
 
-  test('[IE-T38] FEED-007 - filtro Encuestas navega correctamente', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T54] FEED-007 - filtro Encuestas navega correctamente', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -72,7 +72,7 @@ test.describe('Feed', () => {
     await expect(page).toHaveURL(/ptc=survey/, { timeout: 10000 });
   });
 
-  test('[IE-T39] FEED-008 - visualización de módulos de la columna derecha', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T55] FEED-008 - visualización de módulos de la columna derecha', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -82,7 +82,7 @@ test.describe('Feed', () => {
     await expect(feedPage.eventosDestacadosHeading).toBeVisible();
   });
 
-  test('[IE-T40] FEED-010 - visualización de la card de perfil en el feed', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T57] FEED-010 - visualización de la card de perfil en el feed', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -93,7 +93,7 @@ test.describe('Feed', () => {
     await expect(feedPage.seguidoresLink).toBeVisible();
   });
 
-  test('[IE-T41] FEED-011 - validación de mínimo 50 caracteres en repost', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T58] FEED-011 - validación de mínimo 50 caracteres en repost', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
@@ -112,7 +112,7 @@ test.describe('Feed', () => {
     await expect(feedPage.repostModalHeading).not.toBeVisible({ timeout: 5000 });
   });
 
-  test('[IE-T42] FEED-013 - dar y quitar like a una publicación', { tag: '@feed' }, async ({ page }) => {
+  test('[IE-T60] FEED-013 - dar y quitar like a una publicación', { tag: '@feed' }, async ({ page }) => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
