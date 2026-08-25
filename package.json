@@ -22,7 +22,11 @@
     "allure:report": "npm run allure:generate && npm run allure:open",
     "test:allure": "playwright test && npm run allure:report"
   },
-  "keywords": [],
+  "keywords": [
+    "Automation Web",
+    "Intramed",
+    "Conexa"
+  ],
   "author": "Martin Barroso",
   "license": "ISC",
   "devDependencies": {
