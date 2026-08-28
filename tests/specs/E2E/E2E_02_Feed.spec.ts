@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
+import path from 'path';
 import { FeedPage } from '../../pages/Intramed/FeedPage-Intramed';
 
 test.use({ storageState: 'playwright/.auth/auth.json' });
+
+const VIDEO_FILE = path.resolve(process.cwd(), 'utils', 'video.mp4');
 
 test.describe('Feed', () => {
   test('[IE-T19] TC03 - crear publicación con texto y emoji', { tag: '@feed' }, async ({ page }) => {
@@ -132,5 +135,15 @@ test.describe('Feed', () => {
     await expect
       .poll(readCount, { timeout: 5000 })
       .toBe(before);
+  });
+
+  test('[IE-T148] FEED-014 - publicar una publicación con video', { tag: '@feed' }, async ({ page }) => {
+    const feedPage = new FeedPage(page);
+    const text = `Post automatizado con video ${Date.now()}`;
+
+    await feedPage.goto();
+    await feedPage.publishWithVideo(text, VIDEO_FILE);
+
+    await expect(page.getByText(text).first()).toBeVisible({ timeout: 30000 });
   });
 });

@@ -109,4 +109,17 @@ export class ProfilePage {
     await this.page.goBack();
     await this.page.waitForLoadState('networkidle');
   }
+
+  async gotoOtherProfile(handle: string) {
+    await this.page.goto(`/profile/${handle}`, { waitUntil: 'domcontentloaded' });
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  get followButton(): Locator {
+    return this.page.getByRole('button', { name: /^seguir$/i }).filter({ visible: true }).first();
+  }
+
+  get followingButton(): Locator {
+    return this.page.getByRole('button', { name: /siguiendo|dejar de seguir/i }).filter({ visible: true }).first();
+  }
 }

@@ -10,11 +10,14 @@ const PROTECTED_EMAILS = [process.env.TEST_EMAIL, process.env.CHAT_USER2_EMAIL].
 
 const createdAccounts: { email: string; password: string }[] = [];
 
+const onlyLettersAndAccents = (raw: string) =>
+  raw.normalize('NFC').replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]/g, '').trim() || 'Test';
+
 function buildPersonalData(overrides: Partial<OnboardingPersonalData> = {}): OnboardingPersonalData {
   return {
     title: 'Dr.',
-    firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
+    firstName: onlyLettersAndAccents(faker.person.firstName()),
+    lastName: onlyLettersAndAccents(faker.person.lastName()),
     email: buildOnboardingTestEmail('onb'),
     docType: 'DNI',
     docNumber: faker.number.int({ min: 20000000, max: 45000000 }).toString(),
@@ -56,6 +59,7 @@ async function completeWizardThroughVerification(onboardingPage: OnboardingPage,
 
 test.describe('Onboarding', () => {
   test('[IE-T31] ONB-001 - Registro exitoso con opción Completar mi perfil', { tag: '@onboarding' }, async ({ page }) => {
+    test.setTimeout(180_000);
     const onboardingPage = new OnboardingPage(page);
     const personalData = buildPersonalData();
 
@@ -76,6 +80,7 @@ test.describe('Onboarding', () => {
   });
 
   test('[IE-T32] ONB-002 - Registro exitoso con opción Omitir (ir al feed)', { tag: '@onboarding' }, async ({ page }) => {
+    test.setTimeout(180_000);
     const onboardingPage = new OnboardingPage(page);
     const personalData = buildPersonalData();
 

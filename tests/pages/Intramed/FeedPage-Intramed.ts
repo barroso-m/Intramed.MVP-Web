@@ -45,6 +45,11 @@ export class FeedPage {
   readonly commentTextInput: Locator;
   readonly commentSubmitButton: Locator;
 
+  // Composer media & destination (video, publicar como institución)
+  readonly mediaInput: Locator;
+  readonly destinationSelect: Locator;
+  readonly composerFinalSubmit: Locator;
+
   constructor(private readonly page: Page) {
     this.createPostButton = page.getByTestId('post-composer-bar-trigger');
     this.postEditor = page.locator('.tiptap');
@@ -85,6 +90,47 @@ export class FeedPage {
 
     this.commentTextInput = page.getByPlaceholder(/comentar|comentario/i).first();
     this.commentSubmitButton = page.getByRole('button', { name: 'Comentar', exact: true });
+
+    this.mediaInput = page.locator('input[data-testid="post-composer-media-input"]');
+    this.destinationSelect = page.locator('#post-composer-destination-select');
+    this.composerFinalSubmit = page.getByRole('button', { name: 'Crear publicación', exact: true });
+  }
+
+  async selectDestination(name: string | RegExp) {
+    // react-select: click the visible control container (not the hidden input)
+    const destContainer = this.page.locator('[data-testid="post-composer-destination"] .css-cp01gg-control').first();
+    await destContainer.scrollIntoViewIfNeeded();
+    await destContainer.click({ force: true });
+    await this.page.waitForTimeout(600);
+    const option = this.page.locator('[id^="react-select-"][id*="option"]')
+      .filter({ hasText: name })
+      .first();
+    await option.waitFor({ state: 'visible', timeout: 5000 });
+    await option.click();
+    await this.page.waitForTimeout(400);
+  }
+
+  async attachMedia(filePath: string) {
+    await this.mediaInput.setInputFiles(filePath);
+    await this.page.waitForTimeout(1500);
+  }
+
+  async publishWithVideo(text: string, videoPath: string) {
+    await this.openCreatePostModal();
+    await this.typePostContent(text);
+    await this.attachMedia(videoPath);
+    await this.nextButton.click();
+    await this.composerFinalSubmit.waitFor({ state: 'visible' });
+    await this.composerFinalSubmit.click();
+  }
+
+  async publishAsInstitution(text: string, institutionName: string | RegExp) {
+    await this.openCreatePostModal();
+    await this.selectDestination(institutionName);
+    await this.typePostContent(text);
+    await this.nextButton.click();
+    await this.composerFinalSubmit.waitFor({ state: 'visible' });
+    await this.composerFinalSubmit.click();
   }
 
   async goto() {
