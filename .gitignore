@@ -8,9 +8,10 @@ node_modules/
 /playwright/.auth/
 /results/
 
-# Test artifacts
-/allure-results/
-/allure-report/
+# Test artifacts (allure-results, allure-report, allure-results-lean, allure-report-single, etc.)
+allure-results/
+allure-report/
+allure-*/
 *.zip
 
 # Environment
@@ -18,6 +19,25 @@ node_modules/
 
 # Claude Code local settings
 .claude/
+.claude/**
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Personal files
 test-cases-zephyr.csv
+*-TestCases.md

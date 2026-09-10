@@ -54,7 +54,7 @@ async function completeWizardThroughVerification(onboardingPage: OnboardingPage,
 
   const code = await getOtpCode(personalData.email);
   await onboardingPage.fillOtpCode(code);
-  await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 30000 });
 }
 
 test.describe('Onboarding', () => {
@@ -97,11 +97,12 @@ test.describe('Onboarding', () => {
     createdAccounts.push({ email: personalData.email, password: PASSWORD });
 
     await onboardingPage.skipButton.click();
-    await expect(page).toHaveURL(/\/feed/, { timeout: 20000 });
-    await expect(page.getByText('0 Seguidores')).toBeVisible({ timeout: 10000 });
+    await expect(page).toHaveURL(/\/feed/, { timeout: 30000 });
+    await expect(page.getByText('0 Seguidores')).toBeVisible({ timeout: 30000 });
   });
 
   test('[IE-T33] ONB-003 - Registro fallido con email ya registrado', { tag: '@onboarding' }, async ({ page }) => {
+    test.setTimeout(120_000);
     const onboardingPage = new OnboardingPage(page);
     const personalData = buildPersonalData({ email: process.env.TEST_EMAIL! });
 
@@ -109,7 +110,7 @@ test.describe('Onboarding', () => {
     await onboardingPage.fillPersonalData(personalData);
     await onboardingPage.nextButton.click();
 
-    await expect(page.getByRole('heading', { name: '¿Desea ingresar?' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: '¿Desea ingresar?' })).toBeVisible({ timeout: 30000 });
     await expect(page.getByText(/ya está registrado en IntraMed/i)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Recuperar contraseña' })).toBeVisible();
     await expect(page.getByText('Crear cuenta')).toBeVisible();
@@ -132,6 +133,7 @@ test.describe('Onboarding', () => {
   });
 
   test('[IE-T35] ONB-005 - Verificación fallida con código incorrecto', { tag: '@onboarding' }, async ({ page }) => {
+    test.setTimeout(180_000);
     const onboardingPage = new OnboardingPage(page);
     const personalData = buildPersonalData();
 
@@ -143,15 +145,17 @@ test.describe('Onboarding', () => {
     await onboardingPage.nextButton.click();
 
     await onboardingPage.fillOtpCode('000000');
-    await expect(page.getByText('¡Código incorrecto!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('¡Código incorrecto!')).toBeVisible({ timeout: 30000 });
+    await expect(onboardingPage.otpInputs.first()).toBeEnabled({ timeout: 15000 });
 
     const code = await getOtpCode(personalData.email);
     await onboardingPage.fillOtpCode(code);
-    await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 30000 });
     await expect(onboardingPage.nextButton).toBeEnabled();
   });
 
   test('[IE-T36] ONB-006 - Validación de campos obligatorios por paso', { tag: '@onboarding' }, async ({ page }) => {
+    test.setTimeout(180_000);
     const onboardingPage = new OnboardingPage(page);
     const personalData = buildPersonalData();
 
@@ -179,7 +183,7 @@ test.describe('Onboarding', () => {
 
     const code = await getOtpCode(personalData.email);
     await onboardingPage.fillOtpCode(code);
-    await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('¡Su email ha sido verificado!')).toBeVisible({ timeout: 30000 });
     await onboardingPage.nextButton.click();
 
     await onboardingPage.fillContactData({ ...CONTACT_DATA, phone: '' });

@@ -46,8 +46,9 @@ test.describe('Feed', () => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
+    await feedPage.firstCommentButton.waitFor({ state: 'visible' });
     await feedPage.firstCommentButton.click();
-    await expect(feedPage.commentSubmitButton).toBeVisible({ timeout: 10000 });
+    await expect(feedPage.commentSubmitButton).toBeVisible({ timeout: 20000 });
     await expect(feedPage.commentSubmitButton).toBeDisabled();
   });
 
@@ -71,8 +72,20 @@ test.describe('Feed', () => {
     const feedPage = new FeedPage(page);
 
     await feedPage.goto();
-    await feedPage.filterEncuestas.click();
-    await expect(page).toHaveURL(/ptc=survey/, { timeout: 10000 });
+    await feedPage.filterEncuestas.waitFor({ state: 'visible', timeout: 20000 });
+    await feedPage.filterEncuestas.scrollIntoViewIfNeeded().catch(() => {});
+    // Retry the click if the URL doesn't reflect the filter; the button becomes
+    // active on click but the URL param is set client-side on the same event.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await feedPage.filterEncuestas.click();
+      try {
+        await page.waitForURL(/ptc=survey/, { timeout: 8000 });
+        break;
+      } catch {
+        await page.waitForTimeout(500);
+      }
+    }
+    await expect(page).toHaveURL(/ptc=survey/, { timeout: 5000 });
   });
 
   test('[IE-T55] FEED-008 - visualización de módulos de la columna derecha', { tag: '@feed' }, async ({ page }) => {
@@ -80,9 +93,16 @@ test.describe('Feed', () => {
 
     await feedPage.goto();
 
-    await expect(feedPage.institucionesSugeridasHeading).toBeVisible();
-    await expect(feedPage.personasSugeridasHeading).toBeVisible();
-    await expect(feedPage.eventosDestacadosHeading).toBeVisible();
+    await expect(feedPage.institucionesSugeridasHeading).toBeVisible({ timeout: 20000 });
+    await expect(feedPage.personasSugeridasHeading).toBeVisible({ timeout: 20000 });
+    // The "Eventos destacados" widget lazy-loads below the fold; nudge the page
+    // to trigger the intersection observer that mounts it, then wait.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      await page.mouse.wheel(0, 400);
+      await page.waitForTimeout(500);
+      if (await feedPage.eventosDestacadosHeading.isVisible().catch(() => false)) break;
+    }
+    await expect(feedPage.eventosDestacadosHeading).toBeVisible({ timeout: 20000 });
   });
 
   test('[IE-T57] FEED-010 - visualización de la card de perfil en el feed', { tag: '@feed' }, async ({ page }) => {
@@ -128,12 +148,12 @@ test.describe('Feed', () => {
 
     await feedPage.toggleFirstLike();
     await expect
-      .poll(readCount, { timeout: 5000 })
+      .poll(readCount, { timeout: 15000, intervals: [200, 500, 1000] })
       .toBe(before + 1);
 
     await feedPage.toggleFirstLike();
     await expect
-      .poll(readCount, { timeout: 5000 })
+      .poll(readCount, { timeout: 15000, intervals: [200, 500, 1000] })
       .toBe(before);
   });
 

@@ -131,8 +131,8 @@ test.describe('Chat', () => {
     await sender.chat.messageInput.press('Enter');
     await sender.page.waitForTimeout(2000);
 
-    const mensajesItem = receiverPage.locator('nav *, [class*="sidebar"] *').filter({ hasText: /^Mensajes$|^Mensagens$/i }).first();
-    await expect(mensajesItem).toBeVisible({ timeout: 10000 });
+    const mensajesItem = receiverPage.getByText(/^(Mensajes|Mensagens)$/i).filter({ visible: true }).first();
+    await expect(mensajesItem).toBeVisible({ timeout: 15000 });
 
     await sender.ctx.close();
     await receiverCtx.close();

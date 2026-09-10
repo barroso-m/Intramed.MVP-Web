@@ -49,11 +49,16 @@ export class ConfigUserPage {
   async setNewsletter(desired: boolean) {
     const cb = this.newsletterCheckbox;
     if (await cb.isChecked() === desired) return;
-    const box = await this.page.locator('label:has(input#hasNewsletter) > div').boundingBox();
-    if (!box) throw new Error('Newsletter switch not found');
-    for (let attempt = 0; attempt < 3; attempt++) {
-      await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-      await this.page.waitForTimeout(400);
+    const label = this.page.locator('label:has(input#hasNewsletter)');
+    for (let attempt = 0; attempt < 5; attempt++) {
+      // Try clicking the label directly (handles both the visible switch and native checkbox)
+      await label.click({ force: true }).catch(async () => {
+        const box = await this.page.locator('label:has(input#hasNewsletter) > div').boundingBox();
+        if (box) {
+          await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+        }
+      });
+      await this.page.waitForTimeout(800);
       if (await cb.isChecked() === desired) return;
     }
     throw new Error(`Could not set newsletter to ${desired}`);

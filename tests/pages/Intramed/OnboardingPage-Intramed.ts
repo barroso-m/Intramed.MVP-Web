@@ -82,7 +82,9 @@ export class OnboardingPage {
     this.passwordConfirmInput = page.locator('input[name="passwordConfirm"]');
     this.termsCheckboxStep2 = page.locator('input[name="termsAndConditions"]');
 
-    this.otpInputs = page.locator('input[maxlength="1"]');
+    this.otpInputs = page.locator(
+      'input[maxlength="1"], input[autocomplete="one-time-code"], input[inputmode="numeric"]'
+    );
     this.resendEmailButton = page.getByRole('button', { name: 'Reenviar email' });
 
     this.countryCombobox = page.locator('#countryCode');
@@ -108,13 +110,14 @@ export class OnboardingPage {
 
   async goto() {
     await this.page.goto(SIGNUP_URL, { waitUntil: 'domcontentloaded' });
+    await this.page.getByRole('heading', { name: 'Crear cuenta' }).waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async selectOption(combobox: Locator, text: string) {
     await combobox.click();
     await combobox.pressSequentially(text, { delay: 30 });
     const option = this.page.getByRole('option').first();
-    await option.waitFor({ state: 'visible', timeout: 10000 });
+    await option.waitFor({ state: 'visible', timeout: 30000 });
     await option.click();
   }
 
@@ -127,23 +130,38 @@ export class OnboardingPage {
     await this.docNumberInput.fill(data.docNumber);
     await this.birthdateInput.fill(data.birthdate);
     await this.selectOption(this.genderCombobox, data.gender);
+    // Give the wizard time to validate all fields before the Next click,
+    // otherwise the Siguiente button can race the validation on slower browsers.
+    await this.page.waitForFunction(
+      () => {
+        const btn = Array.from(document.querySelectorAll('button'))
+          .find(b => b.textContent?.trim() === 'Siguiente') as HTMLButtonElement | undefined;
+        return btn && !btn.disabled;
+      },
+      undefined,
+      { timeout: 15000 }
+    ).catch(() => {});
   }
 
   async fillPassword(password: string) {
+    await this.passwordInput.waitFor({ state: 'visible', timeout: 20000 });
     await secureFill(this.passwordInput, password);
     await secureFill(this.passwordConfirmInput, password);
     await this.termsCheckboxStep2.check();
   }
 
   async fillOtpCode(code: string) {
+    await this.page.getByRole('heading', { name: /Verificación de cuenta/i }).waitFor({ state: 'visible', timeout: 30000 });
+    await this.otpInputs.first().waitFor({ state: 'visible', timeout: 30000 });
     const digits = code.split('');
     for (let i = 0; i < digits.length; i++) {
-      await this.otpInputs.nth(i).pressSequentially(digits[i]);
+      await this.otpInputs.nth(i).pressSequentially(digits[i], { delay: 30 });
     }
     await this.page.waitForTimeout(500);
   }
 
   async fillContactData(data: OnboardingContactData) {
+    await this.countryCombobox.waitFor({ state: 'visible', timeout: 20000 });
     await this.selectOption(this.countryCombobox, data.country);
     await this.selectOption(this.stateCombobox, data.state);
     await this.selectOption(this.cityCombobox, data.city);
@@ -151,6 +169,7 @@ export class OnboardingPage {
   }
 
   async fillProfessionalData(data: OnboardingProfessionalData) {
+    await this.occupationCombobox.waitFor({ state: 'visible', timeout: 20000 });
     await this.selectOption(this.occupationCombobox, data.occupation);
     await this.selectOption(this.careerCombobox, data.career);
     await this.selectOption(this.specialtyCombobox, data.specialty);

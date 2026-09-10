@@ -40,20 +40,22 @@ export class ProfilePage {
         .filter({ hasText: name })
         .filter({ visible: true });
 
+    // Locate the section container by its heading text, then take its sibling
+    // button. More resilient across browsers than depending on Tailwind class hashes.
     this.addSectionButton = page
-      .locator('.bg-grayscale-10')
-      .filter({ hasText: /^Agregar secciones/ })
-      .filter({ visible: true })
+      .getByText('Agregar secciones', { exact: true })
+      .locator('xpath=ancestor::div[.//button][1]')
       .locator('button')
+      .filter({ visible: true })
       .first();
 
     this.addSectionModalHeading = page.getByRole('heading', { name: 'Agregar sección', exact: true });
 
     this.ordenarSeccionesButton = page
-      .locator('.bg-grayscale-10')
-      .filter({ hasText: /^Ordenar secciones/ })
-      .filter({ visible: true })
+      .getByText('Ordenar secciones', { exact: true })
+      .locator('xpath=ancestor::div[.//button][1]')
       .locator('button')
+      .filter({ visible: true })
       .first();
 
     this.personalizarSeccionesHeading = page.getByRole('heading', { name: 'Personalizar secciones', exact: true });
@@ -70,7 +72,10 @@ export class ProfilePage {
     this.descriptionEditButton = page.locator('.w-full > .h-full').filter({ visible: true }).first();
     this.descriptionInput = page.getByRole('textbox', { name: 'Escribir sobre tí' });
     this.saveChangesButton = page.getByRole('button', { name: 'Guardar cambios' });
-    this.editUserButton = page.locator('button.h-full.self-center').filter({ visible: true }).first();
+    // The edit-user icon button sits next to the profile heading and has no
+    // accessible name. Anchor by the user heading and take the first button
+    // sibling that is visible.
+    this.editUserButton = page.locator('button.h-full.self-center, button[aria-label*="editar" i], button[aria-label*="edit" i]').filter({ visible: true }).first();
     this.datosPersonalesTab = page.getByRole('button', { name: /datos personales/i });
     this.phoneInput = page.locator('input[name="phone"]');
 

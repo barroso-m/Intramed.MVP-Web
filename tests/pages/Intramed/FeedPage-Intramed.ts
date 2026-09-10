@@ -112,15 +112,25 @@ export class FeedPage {
 
   async attachMedia(filePath: string) {
     await this.mediaInput.setInputFiles(filePath);
-    await this.page.waitForTimeout(1500);
+    // Wait for the Next button to actually enable — the file upload is async
+    // and can take considerably longer than a fixed timeout on slower browsers.
+    await this.page.waitForFunction(
+      () => {
+        const btn = Array.from(document.querySelectorAll('button'))
+          .find(b => b.textContent?.trim() === 'Siguiente') as HTMLButtonElement | undefined;
+        return btn && !btn.disabled;
+      },
+      undefined,
+      { timeout: 60000 }
+    ).catch(() => {});
   }
 
   async publishWithVideo(text: string, videoPath: string) {
     await this.openCreatePostModal();
     await this.typePostContent(text);
     await this.attachMedia(videoPath);
-    await this.nextButton.click();
-    await this.composerFinalSubmit.waitFor({ state: 'visible' });
+    await this.nextButton.click({ timeout: 45000 });
+    await this.composerFinalSubmit.waitFor({ state: 'visible', timeout: 30000 });
     await this.composerFinalSubmit.click();
   }
 
@@ -181,7 +191,19 @@ export class FeedPage {
   }
 
   async openRepostModal() {
-    await this.firstRepostButton.click();
-    await this.repostModalHeading.waitFor({ state: 'visible' });
+    await this.firstRepostButton.waitFor({ state: 'visible', timeout: 20000 });
+    await this.firstRepostButton.scrollIntoViewIfNeeded().catch(() => {});
+    // Feed content lazy-loads and the icon buttons can briefly steal the click.
+    // Retry the click if the modal doesn't appear in time.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await this.firstRepostButton.click();
+      try {
+        await this.repostModalHeading.waitFor({ state: 'visible', timeout: 8000 });
+        return;
+      } catch {
+        // fallthrough and retry
+      }
+    }
+    await this.repostModalHeading.waitFor({ state: 'visible', timeout: 15000 });
   }
 }

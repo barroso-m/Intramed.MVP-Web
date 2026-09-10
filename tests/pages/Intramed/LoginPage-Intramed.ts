@@ -17,10 +17,20 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto(LOGIN_URL, { waitUntil: 'networkidle' });
+    try {
+      await this.page.goto(LOGIN_URL, { waitUntil: 'domcontentloaded' });
+    } catch (err) {
+      // Playwright throws when a pending navigation (e.g. a post-logout redirect)
+      // races against goto. In that case we've likely already landed on /login.
+      if (!/is interrupted by another navigation/i.test((err as Error).message)) {
+        throw err;
+      }
+    }
+    await this.emailInput.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   async login(email: string, password: string) {
+    await this.emailInput.waitFor({ state: 'visible', timeout: 30000 });
     await this.emailInput.fill(email);
     await secureFill(this.passwordInput, password);
     await this.submitButton.click();
