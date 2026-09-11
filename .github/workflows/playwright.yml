@@ -24,6 +24,19 @@ jobs:
       env:
         TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        CHAT_USER2_EMAIL: ${{ secrets.CHAT_USER2_EMAIL }}
+        CHAT_USER2_PASSWORD: ${{ secrets.CHAT_USER2_PASSWORD }}
+        GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+        GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+        GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        ZEPHYR_AUTH_TOKEN: ${{ secrets.ZEPHYR_AUTH_TOKEN }}
+        BASE_URL: ${{ vars.BASE_URL }}
+        LOGIN_URL: ${{ vars.LOGIN_URL }}
+        TEST_INVALID_EMAIL: ${{ vars.TEST_INVALID_EMAIL }}
+        TEST_INVALID_PASSWORD: ${{ vars.TEST_INVALID_PASSWORD }}
+        GMAIL_TEST_INBOX: ${{ vars.GMAIL_TEST_INBOX }}
+        ZEPHYR_PROJECT_KEY: ${{ vars.ZEPHYR_PROJECT_KEY }}
+        ZEPHYR_FOLDER_ID: ${{ vars.ZEPHYR_FOLDER_ID }}
     - uses: actions/upload-artifact@v5
       if: ${{ !cancelled() }}
       with:
