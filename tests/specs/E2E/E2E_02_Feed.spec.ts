@@ -35,7 +35,7 @@ test.describe('Feed', () => {
 
     await feedPage.goto();
 
-    await feedPage.firstSaveButton.waitFor({ state: 'visible' });
+    await feedPage.revealFirstSaveButton();
     await feedPage.toggleFirstSave();
     await page.waitForTimeout(1500);
     await feedPage.toggleFirstSave();
@@ -95,13 +95,8 @@ test.describe('Feed', () => {
 
     await expect(feedPage.institucionesSugeridasHeading).toBeVisible({ timeout: 20000 });
     await expect(feedPage.personasSugeridasHeading).toBeVisible({ timeout: 20000 });
-    // The "Eventos destacados" widget lazy-loads below the fold; nudge the page
-    // to trigger the intersection observer that mounts it, then wait.
-    for (let attempt = 0; attempt < 4; attempt++) {
-      await page.mouse.wheel(0, 400);
-      await page.waitForTimeout(500);
-      if (await feedPage.eventosDestacadosHeading.isVisible().catch(() => false)) break;
-    }
+    // "Eventos destacados" se monta recién al entrar en viewport.
+    await feedPage.scrollUntilVisible(feedPage.eventosDestacadosHeading, 10, 600);
     await expect(feedPage.eventosDestacadosHeading).toBeVisible({ timeout: 20000 });
   });
 
@@ -158,6 +153,8 @@ test.describe('Feed', () => {
   });
 
   test('[IE-T148] FEED-014 - publicar una publicación con video', { tag: '@feed' }, async ({ page }) => {
+    // Subir y procesar el video excede holgadamente el timeout por defecto.
+    test.setTimeout(180_000);
     const feedPage = new FeedPage(page);
     const text = `Post automatizado con video ${Date.now()}`;
 

@@ -17,9 +17,11 @@ export default defineConfig({
     ['allure-playwright'],
     ['junit', { outputFile: 'results/junit-results.xml' }],
   ],
-  timeout: 60000,
+  // QA responde lento y la suite corre en tres browsers: 60s dejaba tests
+  // cortados a mitad de acción ("Target page... has been closed").
+  timeout: 90000,
   use: {
-    baseURL: process.env.BASE_URL ?? 'https://intramed-front-qa.conexa.ai',
+    baseURL: process.env.BASE_URL ?? 'https://front.qa.intramed.net',
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'retain-on-failure',

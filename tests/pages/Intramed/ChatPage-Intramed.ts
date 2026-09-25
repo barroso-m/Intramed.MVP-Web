@@ -15,7 +15,8 @@ export class ChatPage {
     this.nuevoMensajeButton = page.getByRole('button', { name: 'Nuevo mensaje', exact: true });
     this.tabTodos = page.getByRole('button', { name: 'Todos', exact: true }).filter({ visible: true }).first();
     this.tabNoLeidos = page.getByRole('button', { name: 'No leídos', exact: true }).filter({ visible: true }).first();
-    this.tabSolicitudes = page.getByRole('button', { name: 'Solicitudes', exact: true }).filter({ visible: true }).first();
+    // El nombre accesible incluye el badge de pendientes ("Solicitudes 1") cuando hay solicitudes.
+    this.tabSolicitudes = page.getByRole('button', { name: /^Solicitudes(\s+\d+)?$/ }).filter({ visible: true }).first();
     this.searchInput = page.getByPlaceholder('Buscar conversaciones');
     this.conversationItem = (name) =>
       page.getByRole('button').filter({ hasText: name }).filter({ visible: true }).first();

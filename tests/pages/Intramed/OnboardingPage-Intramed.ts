@@ -1,7 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { secureFill } from '../../../utils/secureFill';
+import { waitForHydration } from '../../../utils/hydration';
 
-const SIGNUP_URL = process.env.SIGNUP_URL ?? 'https://intramed-login-qa.conexa.ai/signup';
+const SIGNUP_URL = process.env.SIGNUP_URL ?? 'https://login.qa.intramed.net/signup';
 
 export interface OnboardingPersonalData {
   title: string;
@@ -111,6 +112,8 @@ export class OnboardingPage {
   async goto() {
     await this.page.goto(SIGNUP_URL, { waitUntil: 'domcontentloaded' });
     await this.page.getByRole('heading', { name: 'Crear cuenta' }).waitFor({ state: 'visible', timeout: 30000 });
+    await this.firstNameInput.waitFor({ state: 'visible', timeout: 30000 });
+    await waitForHydration(this.firstNameInput);
   }
 
   async selectOption(combobox: Locator, text: string) {
