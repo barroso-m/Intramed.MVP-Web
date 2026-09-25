@@ -112,17 +112,27 @@ export class FeedPage {
 
   async attachMedia(filePath: string) {
     await this.mediaInput.setInputFiles(filePath);
-    // Wait for the Next button to actually enable — the file upload is async
-    // and can take considerably longer than a fixed timeout on slower browsers.
-    await this.page.waitForFunction(
+    // La subida es async y puede tardar bastante en browsers lentos. Esperamos a que
+    // "Siguiente" se habilite o a que el composer muestre el error de carga, lo que
+    // pase primero, para fallar con la causa real en vez de un timeout en el click.
+    const uploadError = this.page.getByText('Ocurrió un error al cargar el archivo').first();
+    const outcome = await this.page.waitForFunction(
       () => {
+        if (document.body.innerText.includes('Ocurrió un error al cargar el archivo')) return 'error';
         const btn = Array.from(document.querySelectorAll('button'))
           .find(b => b.textContent?.trim() === 'Siguiente') as HTMLButtonElement | undefined;
-        return btn && !btn.disabled;
+        return btn && !btn.disabled ? 'ready' : false;
       },
       undefined,
       { timeout: 60000 }
-    ).catch(() => {});
+    ).then(handle => handle.jsonValue()).catch(() => 'timeout');
+
+    if (outcome === 'error' || await uploadError.isVisible()) {
+      throw new Error(`Falló la carga del archivo "${filePath}": el composer mostró "Ocurrió un error al cargar el archivo".`);
+    }
+    if (outcome === 'timeout') {
+      throw new Error(`La carga del archivo "${filePath}" no terminó en 60s: "Siguiente" siguió deshabilitado.`);
+    }
   }
 
   async publishWithVideo(text: string, videoPath: string) {
