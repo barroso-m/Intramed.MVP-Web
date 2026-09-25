@@ -28,6 +28,7 @@ export class FeedPage {
   readonly seguidoresLink: Locator;
 
   // First post interactions (aria-label based, first visible)
+  readonly organicPosts: Locator;
   readonly firstLikeButton: Locator;
   readonly firstLikeCount: Locator;
   readonly firstCommentButton: Locator;
@@ -76,10 +77,18 @@ export class FeedPage {
     this.seguidosLink = page.getByRole('link', { name: /seguidos/i }).filter({ visible: true }).first();
     this.seguidoresLink = page.getByRole('link', { name: /seguidores/i }).filter({ visible: true }).first();
 
-    this.firstLikeButton = page.locator('button[aria-label="like"]').first();
-    this.firstLikeCount = page.locator('button[aria-label="view likes"]').first();
-    this.firstCommentButton = page.locator('button[aria-label="comment"]').first();
-    this.firstRepostButton = page.locator('button[aria-label="repost"]').first();
+    // El feed intercala publicaciones patrocinadas en posiciones variables, y
+    // esas no abren el modal de repost. Operamos siempre sobre el primer post
+    // orgánico para que no dependa de qué quedó arriba en esta corrida.
+    this.organicPosts = page
+      .locator('article')
+      .filter({ hasNot: page.getByText('Patrocinado', { exact: true }) });
+    const firstOrganic = this.organicPosts.first();
+
+    this.firstLikeButton = firstOrganic.getByRole('button', { name: 'like', exact: true });
+    this.firstLikeCount = firstOrganic.getByRole('button', { name: 'view likes', exact: true });
+    this.firstCommentButton = firstOrganic.getByRole('button', { name: 'comment', exact: true });
+    this.firstRepostButton = firstOrganic.getByRole('button', { name: 'repost', exact: true });
     this.firstSaveButton = page.locator('button[aria-label="save"]').first();
     this.firstShareButton = page.locator('button[aria-label="share"]').first();
 
@@ -161,7 +170,8 @@ export class FeedPage {
 
   async openCreatePostModal() {
     await this.createPostButton.click();
-    await this.postEditor.waitFor({ state: 'visible' });
+    // El editor tiptap tarda en inicializarse, sobre todo en Firefox y WebKit.
+    await this.postEditor.waitFor({ state: 'visible', timeout: 45000 });
   }
 
   async typePostContent(content: string) {
@@ -194,6 +204,29 @@ export class FeedPage {
 
   async toggleFirstLike() {
     await this.firstLikeButton.click();
+  }
+
+  /**
+   * El botón de guardar sólo existe en publicaciones ajenas, y el feed las carga
+   * de a poco al scrollear. Arriba suelen quedar las publicaciones propias (que
+   * no se pueden guardar), así que hay que bajar hasta que aparezca la primera.
+   */
+  async revealFirstSaveButton() {
+    await this.scrollUntilVisible(this.firstSaveButton);
+    await this.firstSaveButton.scrollIntoViewIfNeeded().catch(() => {});
+  }
+
+  /**
+   * Varios módulos del feed se montan recién cuando entran en viewport
+   * (intersection observer), así que hay que bajar hasta que aparezcan.
+   */
+  async scrollUntilVisible(target: Locator, maxScrolls = 15, step = 2000) {
+    for (let i = 0; i < maxScrolls; i++) {
+      if (await target.isVisible().catch(() => false)) return;
+      await this.page.mouse.wheel(0, step);
+      await this.page.waitForTimeout(700);
+    }
+    await target.waitFor({ state: 'visible', timeout: 15000 });
   }
 
   async toggleFirstSave() {

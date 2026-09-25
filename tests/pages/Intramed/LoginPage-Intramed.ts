@@ -1,7 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { secureFill } from '../../../utils/secureFill';
+import { fillStable, waitForHydration } from '../../../utils/hydration';
 
-const LOGIN_URL = process.env.LOGIN_URL ?? 'https://intramed-login-qa.conexa.ai/login';
+const LOGIN_URL = process.env.LOGIN_URL ?? 'https://login.qa.intramed.net/login';
 
 export class LoginPage {
   readonly emailInput: Locator;
@@ -27,11 +28,13 @@ export class LoginPage {
       }
     }
     await this.emailInput.waitFor({ state: 'visible', timeout: 30000 });
+    // Sin esto el submit se dispara de forma nativa y nunca llega a la API.
+    await waitForHydration(this.submitButton);
   }
 
   async login(email: string, password: string) {
     await this.emailInput.waitFor({ state: 'visible', timeout: 30000 });
-    await this.emailInput.fill(email);
+    await fillStable(this.emailInput, email);
     await secureFill(this.passwordInput, password);
     await this.submitButton.click();
   }

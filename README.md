@@ -99,8 +99,10 @@ TEST_INVALID_EMAIL=usuario.invalido@test.com
 TEST_INVALID_PASSWORD=claveInvalida123
 
 # URLs
-BASE_URL=https://intramed-front-qa.conexa.ai
-LOGIN_URL=https://intramed-login-qa.conexa.ai/login
+BASE_URL=https://front.qa.intramed.net
+LOGIN_URL=https://login.qa.intramed.net/login
+SIGNUP_URL=https://login.qa.intramed.net/signup
+BACKOFFICE_URL=https://backoffice.qa.intramed.net
 
 # Gmail API (OTP para onboarding) - ver utils/gmail-otp.ts
 GMAIL_CLIENT_ID=tu_client_id
